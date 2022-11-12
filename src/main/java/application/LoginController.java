@@ -286,11 +286,13 @@ public class LoginController {
      */
     public void resetConfirm() throws IOException {
 
-        removeLineFromFile();
         String username = usernameReset.getText();
         String password = brandNewPass.getText();
         String qAns = securityAnswer.getText();
+        removeLineFromFile(username);
+
         if (validateReset()){
+
             BufferedWriter myWriter = new BufferedWriter(new FileWriter("users.TXT"));
             try {
                 myWriter.write(username + ", ");
@@ -323,7 +325,7 @@ public class LoginController {
     /**
      * Is used in order to delete data from the flat file so that new data can be written in its place
      */
-    public void removeLineFromFile() {
+    public void removeLineFromFile(String usernameSaved) {
 
         try {
 
