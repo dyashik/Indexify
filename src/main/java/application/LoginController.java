@@ -37,6 +37,8 @@ public class LoginController {
     @FXML
     private Label loginMessageLabel;
     @FXML
+    private Label resetMessageLabel;
+    @FXML
     public ImageView brandingImageView;
     @FXML
     public ImageView lockImageView;
@@ -52,6 +54,8 @@ public class LoginController {
     public String usernameSaved;
     @FXML
     public String passwordSaved;
+    @FXML
+    public  String qAns;
     @FXML
     public TextField usernameReset;
     @FXML
@@ -257,6 +261,24 @@ public class LoginController {
             stage.setScene(scene);
             stage.show();
     }
+    public boolean validateReset() throws FileNotFoundException {
+        File database = new File("users.TXT");
+        Scanner readDatabase = new Scanner(database);
+
+        while(readDatabase.hasNext())
+        {
+            usernameSaved = readDatabase.findInLine(usernameReset.getText());
+            qAns = readDatabase.findInLine(securityAnswer.getText());
+            if (usernameReset.getText().equals(usernameSaved) && securityAnswer.getText().equals(qAns))
+            {
+                return true;
+            }
+            else {
+                readDatabase.nextLine();
+            }
+        }
+        return false;
+    }
 
     /**
      * Is the main function for the reset password button, writes in the new password into the file and replaces the old one.
@@ -268,29 +290,34 @@ public class LoginController {
         String username = usernameReset.getText();
         String password = brandNewPass.getText();
         String qAns = securityAnswer.getText();
-        BufferedWriter myWriter = new BufferedWriter(new FileWriter("users.TXT"));
-        try {
-            myWriter.write(username + ", ");
-            myWriter.write(password + ", ");
-            myWriter.write(qAns + ",");
-            myWriter.write("\n");
-            myWriter.close();
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
+        if (validateReset()){
+            BufferedWriter myWriter = new BufferedWriter(new FileWriter("users.TXT"));
+            try {
+                myWriter.write(username + ", ");
+                myWriter.write(password + ", ");
+                myWriter.write(qAns + ",");
+                myWriter.write("\n");
+                myWriter.close();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            System.out.println(username + " " + password + " " + qAns);
+
+
+            Stage stage2 = (Stage) reCancel2.getScene().getWindow();
+            stage2.close();
+            Stage stage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("login.fxml"));
+            Scene scene = new Scene(fxmlLoader.load(), 530, 400);
+            stage.setTitle("Indexify");
+            stage.setResizable(false);
+            stage.setScene(scene);
+            stage.show();
+
         }
-        System.out.println(username + " " + password + " " + qAns);
-
-
-        Stage stage2 = (Stage) reCancel2.getScene().getWindow();
-        stage2.close();
-        Stage stage = new Stage();
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("login.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 530, 400);
-        stage.setTitle("Indexify");
-        stage.setResizable(false);
-        stage.setScene(scene);
-        stage.show();
-
+        else{
+            resetMessageLabel.setText("Invalid Please try again!");
+        }
     }
 
     /**
