@@ -57,9 +57,9 @@ public class LoginController {
     @FXML
     public  String qAns;
     @FXML
-    public TextField usernameReset;
+    private TextField usernameReset;
     @FXML
-    public TextField securityAnswer;
+    private TextField securityAnswer;
     @FXML
     public TextField brandNewPass;
     @FXML
@@ -261,15 +261,15 @@ public class LoginController {
             stage.setScene(scene);
             stage.show();
     }
-    public boolean validateReset() throws FileNotFoundException {
+    public boolean validateReset(String username, String qAns) throws FileNotFoundException {
         File database = new File("users.TXT");
         Scanner readDatabase = new Scanner(database);
 
         while(readDatabase.hasNext())
         {
-            usernameSaved = readDatabase.findInLine(usernameReset.getText());
-            qAns = readDatabase.findInLine(securityAnswer.getText());
-            if (usernameReset.getText().equals(usernameSaved) && securityAnswer.getText().equals(qAns))
+
+
+            if (usernameReset.getText().equals(username) && securityAnswer.getText().equals(qAns))
             {
                 return true;
             }
@@ -286,14 +286,18 @@ public class LoginController {
      */
     public void resetConfirm() throws IOException {
 
+
         String username = usernameReset.getText();
         String password = brandNewPass.getText();
         String qAns = securityAnswer.getText();
         removeLineFromFile(username);
 
-        if (validateReset()){
 
-            BufferedWriter myWriter = new BufferedWriter(new FileWriter("users.TXT"));
+
+        if (validateReset(username, qAns)) {
+
+
+            BufferedWriter myWriter = new BufferedWriter(new FileWriter("users.TXT", true));
             try {
                 myWriter.write(username + ", ");
                 myWriter.write(password + ", ");
@@ -315,8 +319,8 @@ public class LoginController {
             stage.setResizable(false);
             stage.setScene(scene);
             stage.show();
-
         }
+
         else{
             resetMessageLabel.setText("Invalid Please try again!");
         }
@@ -348,7 +352,7 @@ public class LoginController {
             //unless content matches data to be removed.
             while ((line = br.readLine()) != null) {
 
-                if (line.trim().indexOf(usernameReset.getText()) == -1) {
+                if (line.trim().indexOf(usernameSaved) == -1) {
 
                     pw.println(line);
                     pw.flush();
@@ -358,14 +362,24 @@ public class LoginController {
             br.close();
 
             //Delete the original file
-            if (!inFile.delete()) {
-                System.out.println("Could not delete file");
-                return;
-            }
-
+            inFile.delete();
+//            if (!inFile.delete()) {
+//
+//                System.out.println("Could not delete file");
+//            }
+//
+//            else{
+//                System.out.println("file is deleted ");
+//            }
             //Rename the new file to the filename the original file had.
-            if (!tempFile.renameTo(inFile))
-                System.out.println("Could not rename file");
+            tempFile.renameTo(inFile);
+//            if (!tempFile.renameTo(inFile))
+//                System.out.println("Could not rename file");
+//
+//            else{
+//                System.out.println("File was renamed");
+//
+//            }
 
         }
         catch (FileNotFoundException ex) {
