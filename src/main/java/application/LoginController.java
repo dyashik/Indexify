@@ -182,54 +182,60 @@ public class LoginController {
         Label usernameLabel = new Label("Username: ");
         TextField usernameField = new TextField();
 
-
         Label passwordLabel = new Label("Password: ");
         PasswordField passwordField = new PasswordField();
 
-        Label securityQuestion = new Label("Security Question: What city were you born in? ");
+        Label securityQuestion = new Label("Security Question: \nMom's Maiden Name? ");
         TextField question = new TextField();
         Button submit = new Button("Submit");
-        submit.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent e) {
-                String username = usernameField.getText();
-                String password = passwordField.getText();
-                String qAns = question.getText();
-                try {
-                    myWriter.write(username + ", ");
-                    myWriter.write(password + ", ");
-                    myWriter.write(qAns + ",");
-                    myWriter.write("\n");
-                    myWriter.close();
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-                System.out.println(username + " " + password + " " + qAns);
+        submit.setStyle("-fx-text-fill: white; -fx-background-color: #a6051a");
 
-                stage.close();
-
-
+        submit.setOnAction(e -> {
+            String username = usernameField.getText();
+            String password = passwordField.getText();
+            String qAns = question.getText();
+            try {
+                myWriter.write(username + ", ");
+                myWriter.write(password + ", ");
+                myWriter.write(qAns + ",");
+                myWriter.write("\n");
+                myWriter.close();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
             }
+            System.out.println(username + " " + password + " " + qAns);
+
+            stage.close();
+
         });
 
         HBox userBox = new HBox();
+        usernameLabel.setPadding(new Insets(5, 20, 0, 0));
         userBox.getChildren().addAll(usernameLabel, usernameField);
-        userBox.setPadding(new Insets(10, 10, 10, 10));
+        userBox.setPadding(new Insets(20, 0, 20, 30));
 
         HBox passBox = new HBox();
+        passwordLabel.setPadding(new Insets(5, 23, 0, 0));
         passBox.getChildren().addAll(passwordLabel, passwordField);
-        passBox.setPadding(new Insets(10, 10, 10, 10));
+        passBox.setPadding(new Insets(20, 0, 20, 30));
 
         HBox quesBox = new HBox();
+        securityQuestion.setPadding(new Insets(5, 23, 0, 0));
         quesBox.getChildren().addAll(securityQuestion, question);
-        quesBox.setPadding(new Insets(10, 10, 10, 10));
+        quesBox.setPadding(new Insets(20, 0, 20, 30));
+
+        HBox submitBox = new HBox();
+        submitBox.getChildren().addAll(submit);
+        submitBox.setPadding(new Insets(20, 0, 20, 30));
 
         VBox vbox = new VBox();
-        vbox.getChildren().addAll(userBox, passBox, quesBox, submit);
+        vbox.getChildren().addAll(userBox, passBox, quesBox, submitBox);
 
         root.getChildren().addAll(vbox);
         stage.setScene(scene);
         stage.show();
     }
+    
     @FXML
     public void logoutButton()
     {
